@@ -34,12 +34,12 @@ public class AlunoRestApi {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "sucesso na criação"),
 			@ApiResponse(code = 405, message = "erro na validação"), })
 	@RequestMapping(value = "/aluno", method = RequestMethod.POST, produces = "text/plain")
-	public ResponseEntity<String> salvar(@RequestBody AlunoModelo aluno) throws Exception {
+	public ResponseEntity<String> salvar(@RequestBody AlunoModelo aluno) {
 		ResponseEntity<String> ret = null;
 		try {
-			Integer id = servico.salvar(aluno);
-			ret = new ResponseEntity<>(id.toString(), HttpStatus.OK);
-		} catch (ValidacaoException e) {
+			servico.salvar(aluno);
+			ret = new ResponseEntity<>(aluno.toString(), HttpStatus.OK);
+		} catch (Exception e) {
 			ret = new ResponseEntity<>(e.getMessage(), HttpStatus.METHOD_NOT_ALLOWED);
 		}
 		return ret;
@@ -75,7 +75,7 @@ public class AlunoRestApi {
 		try {
 			servico.deletar(id);
 			responseEntity = ResponseEntity.ok().build();
-		} catch (EntidadeNaoEncontradaException e) {
+		} catch (Exception e) {
 			responseEntity = ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 		return responseEntity;
@@ -90,7 +90,7 @@ public class AlunoRestApi {
 		try {
 			servico.atualizar(aluno);
 			ret = ResponseEntity.ok().build();
-		} catch (ValidacaoException e) {
+		} catch (Exception e) {
 			ret = ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
 		}
 		return ret;
